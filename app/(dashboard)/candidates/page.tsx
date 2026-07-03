@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { Users, ChevronDown, Star, AlertCircle, Search } from 'lucide-react';
 import { LayoutDashboard, Briefcase, Building2, CalendarDays, FolderOpen, FileText, BarChart2, Bell, Plus } from 'lucide-react';
-import type { Candidate } from '@/lib/supabase';
+import type { Candidate } from '@/lib/supabase/types';
 import Sidebar from '@/components/Sidebar';
 
 
