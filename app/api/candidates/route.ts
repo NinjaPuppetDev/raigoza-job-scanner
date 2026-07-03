@@ -1,11 +1,13 @@
 import { NextResponse } from 'next/server';
-import { fetchCandidates } from '@/lib/supabase';
+import { createClient } from '@/lib/supabase/server';
+import { fetchCandidates } from '@/lib/supabase/queries';
 
 export const dynamic = 'force-dynamic';
 
 export async function GET() {
   try {
-    const candidates = await fetchCandidates();
+    const supabase = await createClient();
+    const candidates = await fetchCandidates(supabase);
     return NextResponse.json(candidates);
   } catch (err) {
     console.error('Candidates fetch error:', err);
