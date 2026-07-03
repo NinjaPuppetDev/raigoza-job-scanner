@@ -1,12 +1,14 @@
 import { NextResponse } from 'next/server';
-import { fetchApplications, fetchInterviews, fetchContacts } from '@/lib/airtable';
+import { createClient } from '@/lib/supabase/server';
+import { fetchApplications, fetchInterviews, fetchContacts } from '@/lib/supabase/queries';
 
 export async function GET() {
   try {
+    const supabase = await createClient();
     const [apps, interviews, contacts] = await Promise.all([
-      fetchApplications(),
-      fetchInterviews(),
-      fetchContacts(),
+      fetchApplications(supabase),
+      fetchInterviews(supabase),
+      fetchContacts(supabase),
     ]);
 
     const total = apps.length;
@@ -17,7 +19,6 @@ export async function GET() {
     const responded = apps.filter((a) => a.currentStage !== 'Applied').length;
     const responseRate = total > 0 ? Math.round((responded / total) * 100) : 0;
 
-    // Funnel counts
     const stages = ['Applied', 'Recruiter Screen', 'Hiring Manager', 'Final Interview', 'Offer'];
     const funnel = stages.map((stage) => ({
       stage,
@@ -27,7 +28,6 @@ export async function GET() {
         : 0,
     }));
 
-    // Applications over time (last 30 days, grouped by week)
     const now = new Date();
     const weeks: { label: string; count: number }[] = [];
     for (let i = 4; i >= 0; i--) {

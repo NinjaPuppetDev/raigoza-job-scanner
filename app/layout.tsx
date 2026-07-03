@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'Raigoza · Job Scanner',
+  title: 'ApplyIQ · Job Scanner',
   description: 'Track your job search pipeline',
 };
 

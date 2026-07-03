@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { fetchCandidates } from '@/lib/airtable';
+import { fetchCandidates } from '@/lib/supabase';
 
 export const dynamic = 'force-dynamic';
 

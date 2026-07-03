@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { groq, MODEL, SCORE_PROMPT } from '@/lib/groq';
-import { createCandidate, fetchApplicationById } from '@/lib/airtable';
+import { createCandidate, fetchApplicationById } from '@/lib/supabase';
 
 export async function POST(req: Request) {
   try {

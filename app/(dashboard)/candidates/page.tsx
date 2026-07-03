@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { Users, ChevronDown, Star, AlertCircle, Search } from 'lucide-react';
 import { LayoutDashboard, Briefcase, Building2, CalendarDays, FolderOpen, FileText, BarChart2, Bell, Plus } from 'lucide-react';
-import type { Candidate } from '@/lib/airtable';
+import type { Candidate } from '@/lib/supabase';
 import Sidebar from '@/components/Sidebar';
 
 
