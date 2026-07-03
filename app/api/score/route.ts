@@ -1,12 +1,14 @@
 import { NextResponse } from 'next/server';
 import { groq, MODEL, SCORE_PROMPT } from '@/lib/groq';
-import { createCandidate, fetchApplicationById } from '@/lib/supabase';
+import { createAdminClient } from '@/lib/supabase/admin';
+import { createCandidate, fetchApplicationById } from '@/lib/supabase/queries';
 
 export async function POST(req: Request) {
   try {
     const { applicationId, profile, screeningAnswers } = await req.json();
+    const supabase = createAdminClient();
 
-    const application = await fetchApplicationById(applicationId);
+    const application = await fetchApplicationById(supabase, applicationId);
     if (!application) {
       return NextResponse.json({ error: 'Application not found' }, { status: 404 });
     }
@@ -32,8 +34,7 @@ export async function POST(req: Request) {
     const clean = raw.replace(/```json|```/g, '').trim();
     const scoreResult = JSON.parse(clean);
 
-    // Save candidate to Airtable
-    const candidate = await createCandidate({
+    const candidate = await createCandidate(supabase, {
       name:             profile.name ?? '',
       email:            profile.email ?? '',
       phone:            profile.phone ?? '',
