@@ -1,10 +1,8 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Users, ChevronDown, Star, AlertCircle, Search } from 'lucide-react';
-import { LayoutDashboard, Briefcase, Building2, CalendarDays, FolderOpen, FileText, BarChart2, Bell, Plus } from 'lucide-react';
+import { Users, Star, AlertCircle, Search } from 'lucide-react';
 import type { Candidate } from '@/lib/supabase/types';
-
 
 // ─── Score ring ───────────────────────────────────────────────────────────────
 
@@ -142,95 +140,93 @@ export default function CandidatesPage() {
   let parsed: { grade: string } | null = null;
 
   return (
-    <div className="layout">
-      <main className="main">
-        <div className="topbar">
-          <div className="topbar-greeting">
-            <h1>Candidates</h1>
-            <p>All applicants who submitted through the job scanner</p>
-          </div>
-          <div className="topbar-actions">
-            <div className="search-box">
-              <Search size={13} />
-              <input
-                value={search}
-                onChange={e => setSearch(e.target.value)}
-                placeholder="Search candidates..."
-                style={{ border: 'none', background: 'none', outline: 'none', fontSize: 13, color: 'var(--text-primary)', width: 160 }}
-              />
-            </div>
+    <>
+      <div className="topbar">
+        <div className="topbar-greeting">
+          <h1>Candidates</h1>
+          <p>All applicants who submitted through the job scanner</p>
+        </div>
+        <div className="topbar-actions">
+          <div className="search-box">
+            <Search size={13} />
+            <input
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+              placeholder="Search candidates..."
+              style={{ border: 'none', background: 'none', outline: 'none', fontSize: 13, color: 'var(--text-primary)', width: 160 }}
+            />
           </div>
         </div>
+      </div>
 
-        <div className="content">
-          <div className="card">
-            <div className="card-header">
-              <div className="card-title">All Candidates ({filtered.length})</div>
-            </div>
-            <div className="card-body">
-              {loading ? (
-                <div style={{ padding: '40px 0', textAlign: 'center', color: 'var(--text-tertiary)' }}>Loading...</div>
-              ) : filtered.length === 0 ? (
-                <div style={{ padding: '40px 0', textAlign: 'center', color: 'var(--text-tertiary)' }}>
-                  <Users size={32} style={{ marginBottom: 12, opacity: .3 }} />
-                  <p>No candidates yet.</p>
-                </div>
-              ) : (
-                <table className="app-table">
-                  <thead>
-                    <tr>
-                      <th>Name</th>
-                      <th>Email</th>
-                      <th>Job Applied</th>
-                      <th>Score</th>
-                      <th>Grade</th>
-                      <th>Submitted</th>
-                      <th></th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {filtered.map(c => {
-                      try { parsed = JSON.parse(c.scoreReasoning); } catch { parsed = null; }
-                      return (
-                        <tr key={c.id}>
-                          <td style={{ fontWeight: 600 }}>{c.name || '—'}</td>
-                          <td style={{ color: 'var(--text-secondary)' }}>{c.email || '—'}</td>
-                          <td>{c.applicationId || '—'}</td>
-                          <td>
-                            <span style={{ fontWeight: 700, color: scoreColor(c.score) }}>{c.score}</span>
-                          </td>
-                          <td>
-                            <span style={{
-                              background: c.score >= 75 ? 'var(--green-light)' : c.score >= 50 ? 'var(--amber-light)' : 'var(--red-light)',
-                              color: c.score >= 75 ? '#15803d' : c.score >= 50 ? '#92400e' : 'var(--red)',
-                              padding: '2px 8px', borderRadius: 12, fontSize: 12, fontWeight: 700,
-                            }}>
-                              {parsed?.grade ?? '—'}
-                            </span>
-                          </td>
-                          <td style={{ color: 'var(--text-secondary)' }}>
-                            {c.submittedAt ? new Date(c.submittedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '—'}
-                          </td>
-                          <td>
-                            <button
-                              onClick={() => setSelected(c)}
-                              style={{ fontSize: 12, color: 'var(--accent)', background: 'none', border: 'none', cursor: 'pointer', fontWeight: 600 }}
-                            >
-                              View Score
-                            </button>
-                          </td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
-              )}
-            </div>
+      <div className="content">
+        <div className="card">
+          <div className="card-header">
+            <div className="card-title">All Candidates ({filtered.length})</div>
+          </div>
+          <div className="card-body">
+            {loading ? (
+              <div style={{ padding: '40px 0', textAlign: 'center', color: 'var(--text-tertiary)' }}>Loading...</div>
+            ) : filtered.length === 0 ? (
+              <div style={{ padding: '40px 0', textAlign: 'center', color: 'var(--text-tertiary)' }}>
+                <Users size={32} style={{ marginBottom: 12, opacity: .3 }} />
+                <p>No candidates yet.</p>
+              </div>
+            ) : (
+              <table className="app-table">
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Job Applied</th>
+                    <th>Score</th>
+                    <th>Grade</th>
+                    <th>Submitted</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filtered.map(c => {
+                    try { parsed = JSON.parse(c.scoreReasoning); } catch { parsed = null; }
+                    return (
+                      <tr key={c.id}>
+                        <td style={{ fontWeight: 600 }}>{c.name || '—'}</td>
+                        <td style={{ color: 'var(--text-secondary)' }}>{c.email || '—'}</td>
+                        <td>{c.applicationId || '—'}</td>
+                        <td>
+                          <span style={{ fontWeight: 700, color: scoreColor(c.score) }}>{c.score}</span>
+                        </td>
+                        <td>
+                          <span style={{
+                            background: c.score >= 75 ? 'var(--green-light)' : c.score >= 50 ? 'var(--amber-light)' : 'var(--red-light)',
+                            color: c.score >= 75 ? '#15803d' : c.score >= 50 ? '#92400e' : 'var(--red)',
+                            padding: '2px 8px', borderRadius: 12, fontSize: 12, fontWeight: 700,
+                          }}>
+                            {parsed?.grade ?? '—'}
+                          </span>
+                        </td>
+                        <td style={{ color: 'var(--text-secondary)' }}>
+                          {c.submittedAt ? new Date(c.submittedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '—'}
+                        </td>
+                        <td>
+                          <button
+                            onClick={() => setSelected(c)}
+                            style={{ fontSize: 12, color: 'var(--accent)', background: 'none', border: 'none', cursor: 'pointer', fontWeight: 600 }}
+                          >
+                            View Score
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            )}
           </div>
         </div>
-      </main>
+      </div>
 
       {selected && <ScorePanel candidate={selected} onClose={() => setSelected(null)} />}
-    </div>
+    </>
   );
 }
