@@ -22,6 +22,7 @@ interface DashboardData {
   recentApplications: Application[];
   upcomingInterviews: { id: string; title: string; company: string; date: string; time: string; format: string }[];
   followUps: { id: string; name: string; role: string; company: string; followUpDate: string; followUpStatus: string }[];
+  scores: Record<string, number>;
 }
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
@@ -45,6 +46,12 @@ function stageLabel(stage: ApplicationStage) {
     'Final Interview': 'Final Interview',
   };
   return map[stage] ?? stage;
+}
+
+function scoreColor(score: number) {
+  if (score >= 75) return 'var(--green)';
+  if (score >= 50) return 'var(--amber)';
+  return 'var(--red)';
 }
 
 function followupClass(status: string) {
@@ -325,31 +332,42 @@ export default function Dashboard() {
                     <th>Job Title</th>
                     <th>Company</th>
                     <th>Status</th>
+                    <th>Resume Score</th>
                     <th>Date Applied</th>
                     <th></th>
                   </tr>
                 </thead>
                 <tbody>
-                  {d.recentApplications.map((app) => (
-                    <tr key={app.id}>
-                      <td>{app.jobTitle}</td>
-                      <td>
-                        <div className="company-cell">
-                          <div className="company-logo">{app.company[0]}</div>
-                          {app.company}
-                        </div>
-                      </td>
-                      <td>
-                        <span className={stageBadge(app.currentStage)}>
-                          {stageLabel(app.currentStage)}
-                        </span>
-                      </td>
-                      <td style={{ color: 'var(--text-secondary)' }}>
-                        {app.dateApplied ? new Date(app.dateApplied).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '—'}
-                      </td>
-                      <td><MoreHorizontal size={15} style={{ color: 'var(--text-tertiary)', cursor: 'pointer' }} /></td>
-                    </tr>
-                  ))}
+                  {d.recentApplications.map((app) => {
+                    const score = d.scores[app.id];
+                    return (
+                      <tr key={app.id}>
+                        <td>{app.jobTitle}</td>
+                        <td>
+                          <div className="company-cell">
+                            <div className="company-logo">{app.company[0]}</div>
+                            {app.company}
+                          </div>
+                        </td>
+                        <td>
+                          <span className={stageBadge(app.currentStage)}>
+                            {stageLabel(app.currentStage)}
+                          </span>
+                        </td>
+                        <td>
+                          {score != null ? (
+                            <span style={{ fontWeight: 700, color: scoreColor(score) }}>{score}</span>
+                          ) : (
+                            <span style={{ color: 'var(--text-tertiary)' }}>—</span>
+                          )}
+                        </td>
+                        <td style={{ color: 'var(--text-secondary)' }}>
+                          {app.dateApplied ? new Date(app.dateApplied).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '—'}
+                        </td>
+                        <td><MoreHorizontal size={15} style={{ color: 'var(--text-tertiary)', cursor: 'pointer' }} /></td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>

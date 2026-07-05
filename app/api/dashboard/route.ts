@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
-import { fetchApplications, fetchInterviews, fetchContacts } from '@/lib/supabase/queries';
+import { fetchApplications, fetchInterviews, fetchContacts, fetchLatestScores } from '@/lib/supabase/queries';
 
 export async function GET() {
   try {
@@ -10,6 +10,8 @@ export async function GET() {
       fetchInterviews(supabase),
       fetchContacts(supabase),
     ]);
+
+    const scores = await fetchLatestScores(supabase, apps.map((a) => a.id));
 
     const total = apps.length;
     const active = apps.filter((a) =>
@@ -52,6 +54,7 @@ export async function GET() {
       recentApplications: apps.slice(-5).reverse(),
       upcomingInterviews: interviews.slice(0, 5),
       followUps: contacts.slice(0, 4),
+      scores,
     });
   } catch (err) {
     console.error('Dashboard fetch error:', err);

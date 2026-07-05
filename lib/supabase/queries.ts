@@ -37,7 +37,30 @@ export async function fetchCandidates(supabase: SupabaseClient): Promise<Candida
   return (data ?? []).map(mapCandidate);
 }
 
-export async function createApplication(supabase: SupabaseClient, data: Omit<Application, 'id'>): Promise<Application> {
+// Returns a map of applicationId -> most recent score, for joining onto the
+// applications list in the dashboard. Empty input short-circuits to avoid
+// an unnecessary query.
+export async function fetchLatestScores(
+  supabase: SupabaseClient,
+  applicationIds: string[]
+): Promise<Record<string, number>> {
+  if (applicationIds.length === 0) return {};
+  const { data, error } = await supabase
+    .from('candidates')
+    .select('application_id, score, submitted_at')
+    .in('application_id', applicationIds)
+    .order('submitted_at', { ascending: false });
+  if (error) return {};
+  const latest: Record<string, number> = {};
+  for (const row of data ?? []) {
+    if (row.application_id && !(row.application_id in latest)) {
+      latest[row.application_id] = row.score;
+    }
+  }
+  return latest;
+}
+
+export async function createApplication(supabase: SupabaseClient, data: Omit<Application, 'id' | 'userId'>): Promise<Application> {
   const { data: row, error } = await supabase
     .from('applications')
     .insert({
@@ -57,10 +80,19 @@ export async function createApplication(supabase: SupabaseClient, data: Omit<App
   return mapApplication(row);
 }
 
-export async function createCandidate(supabase: SupabaseClient, data: Omit<Candidate, 'id'>): Promise<Candidate> {
+// ownerId must be passed explicitly when inserting via the admin/service-role
+// client (public apply flow) — that client has no auth session, so the
+// column's `default auth.uid()` resolves to null and the row becomes
+// invisible to the owner under RLS. Logged-in-session inserts could still
+// rely on the default, but passing it explicitly here keeps one code path.
+export async function createCandidate(
+  supabase: SupabaseClient,
+  data: Omit<Candidate, 'id'> & { ownerId: string }
+): Promise<Candidate> {
   const { data: row, error } = await supabase
     .from('candidates')
     .insert({
+      user_id: data.ownerId,
       name: data.name,
       email: data.email,
       phone: data.phone,

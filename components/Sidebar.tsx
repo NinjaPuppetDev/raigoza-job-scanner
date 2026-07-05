@@ -8,9 +8,9 @@ import {
 } from 'lucide-react';
 
 const navItems = [
-  { icon: <LayoutDashboard size={16} />, label: 'Dashboard', href: '/' },
+  { icon: <LayoutDashboard size={16} />, label: 'Dashboard', href: '/dashboard' },
   { icon: <Users size={16} />, label: 'Candidates', href: '/candidates' },
-  { icon: <ExternalLink size={16} />, label: 'Postings', href: '/applications' },
+  { icon: <ExternalLink size={16} />, label: 'Resume Score', href: '/applications' },
 ];
 
 const bottomItems = [

@@ -4,6 +4,7 @@ export type ApplicationStage =
 
 export interface Application {
   id: string;
+  userId: string;
   jobTitle: string;
   company: string;
   jobUrl: string;
@@ -56,6 +57,7 @@ export interface Contact {
 export function mapApplication(r: any): Application {
   return {
     id: r.id,
+    userId: r.user_id,
     jobTitle: r.job_title ?? '',
     company: r.company ?? '',
     jobUrl: r.job_url ?? '',

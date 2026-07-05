@@ -43,6 +43,7 @@ export async function POST(req: Request) {
       score:            scoreResult.score ?? 0,
       scoreReasoning:   JSON.stringify(scoreResult),
       applicationId,
+      ownerId:          application.userId,
       submittedAt:      new Date().toISOString(),
     });
 
