@@ -10,7 +10,7 @@ import {
 const navItems = [
   { icon: <LayoutDashboard size={16} />, label: 'Dashboard', href: '/' },
   { icon: <Users size={16} />, label: 'Candidates', href: '/candidates' },
-  { icon: <ExternalLink size={16} />, label: 'Apply', href: '/apply/rec6naM7TOO0txTv3' },
+  { icon: <ExternalLink size={16} />, label: 'Postings', href: '/applications' },
 ];
 
 const bottomItems = [
@@ -23,7 +23,7 @@ const bottomItems = [
 const mobileNavItems = [
   { icon: <LayoutDashboard size={20} />, label: 'Dashboard', href: '/' },
   { icon: <Users size={20} />, label: 'Candidates', href: '/candidates' },
-  { icon: <ExternalLink size={20} />, label: 'Apply', href: '/apply/rec6naM7TOO0txTv3' },
+  { icon: <ExternalLink size={20} />, label: 'Postings', href: '/applications' },
   { icon: <Bell size={20} />, label: 'Reminders', href: '#', badge: '3' },
 ];
 
