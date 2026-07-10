@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { groq, MODEL, SCORE_PROMPT } from '@/lib/groq';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { createCandidate, fetchApplicationById } from '@/lib/supabase/queries';
+import { checkUsageLimit } from '@/lib/billing/usage';
 
 export async function POST(req: Request) {
   try {
@@ -11,6 +12,19 @@ export async function POST(req: Request) {
     const application = await fetchApplicationById(supabase, applicationId);
     if (!application) {
       return NextResponse.json({ error: 'Application not found' }, { status: 404 });
+    }
+
+    const usage = await checkUsageLimit(supabase, application.userId);
+    if (!usage.allowed) {
+      return NextResponse.json(
+        {
+          error: 'Monthly review limit reached',
+          upgradeRequired: true,
+          used: usage.used,
+          limit: usage.limit,
+        },
+        { status: 403 }
+      );
     }
 
     const profileStr = JSON.stringify(profile, null, 2);

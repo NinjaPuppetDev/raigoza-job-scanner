@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { ArrowRight, FileText, BarChart2, Lightbulb } from 'lucide-react';
+import { ArrowRight, FileText, BarChart2, Lightbulb, Check } from 'lucide-react';
 import styles from './marketing.module.css';
 
 const METRICS = [
@@ -24,6 +24,29 @@ const FEATURES = [
     icon: <Lightbulb size={18} />,
     title: 'Improve',
     body: 'Understand exactly which skills and keywords are preventing interviews.',
+  },
+];
+
+const PLANS = [
+  {
+    name: 'Free',
+    price: '$0',
+    period: '/mo',
+    description: '5 resume reviews per month. Full application tracking, no card required.',
+    features: ['Application tracker', 'Public apply pages', '5 AI resume reviews/mo'],
+    cta: 'Get Started',
+    href: '/login',
+    highlight: false,
+  },
+  {
+    name: 'Pro',
+    price: '$29',
+    period: '/mo',
+    description: 'For recruiters actively hiring. Unlimited reviews, cancel anytime.',
+    features: ['Everything in Free', 'Unlimited AI resume reviews', 'Priority scoring'],
+    cta: 'Upgrade to Pro',
+    href: '/api/stripe/checkout',
+    highlight: true,
   },
 ];
 
@@ -116,10 +139,41 @@ export default function LandingPage() {
         ))}
       </section>
 
+      {/* Pricing */}
+      <section id="pricing" className={styles.features} style={{ scrollMarginTop: 96 }}>
+        {PLANS.map((plan) => (
+          <div
+            key={plan.name}
+            className={styles.featureCard}
+            style={plan.highlight ? { border: '2px solid var(--accent, #111)' } : undefined}
+          >
+            <h3>{plan.name}</h3>
+            <div style={{ display: 'flex', alignItems: 'baseline', gap: 4, margin: '8px 0' }}>
+              <span style={{ fontSize: 32, fontWeight: 800 }}>{plan.price}</span>
+              <span style={{ fontSize: 13, color: 'var(--text-secondary, #666)' }}>{plan.period}</span>
+            </div>
+            <p>{plan.description}</p>
+            <ul style={{ listStyle: 'none', padding: 0, margin: '16px 0', display: 'flex', flexDirection: 'column', gap: 8 }}>
+              {plan.features.map((f) => (
+                <li key={f} style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13 }}>
+                  <Check size={14} /> {f}
+                </li>
+              ))}
+            </ul>
+            <Link
+              href={plan.href}
+              className={plan.highlight ? styles.btnPrimaryLg : styles.linkGhost}
+            >
+              {plan.cta} <ArrowRight size={plan.highlight ? 15 : 13} />
+            </Link>
+          </div>
+        ))}
+      </section>
+
       {/* CTA */}
       <section className={styles.ctaSection}>
         <h2>Ready to apply<br />with confidence?</h2>
-        <p>Start tracking your job search today.</p>
+        <p>Start free, upgrade whenever you need more reviews.</p>
         <Link href="/login" className={styles.btnPrimaryLg}>
           Create Free Account <ArrowRight size={15} />
         </Link>

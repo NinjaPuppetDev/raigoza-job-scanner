@@ -1,10 +1,12 @@
 import Link from 'next/link';
 import { Zap } from 'lucide-react';
 import styles from './marketing.module.css';
+import { ScrollToHash } from './scroll-to-hash';
 
 export default function MarketingLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className={styles.shell}>
+        <ScrollToHash />
       <header className={styles.navWrap}>
         <nav className={styles.nav}>
           <Link href="/" className={styles.logo}>
@@ -14,6 +16,7 @@ export default function MarketingLayout({ children }: { children: React.ReactNod
             ApplyIQ
           </Link>
           <div className={styles.navActions}>
+            <Link href="/#pricing" className={styles.navLogin}>Pricing</Link>
             <Link href="/login" className={styles.navLogin}>Login</Link>
             <Link href="/login" className={styles.btnPrimarySm}>Start Free</Link>
           </div>

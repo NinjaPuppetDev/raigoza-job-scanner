@@ -115,6 +115,7 @@ export default function ApplyPage({ params }: { params: Promise<{ jobId: string 
   // Step 2
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [scoring, setScoring] = useState(false);
+  const [scoreError, setScoreError] = useState('');
 
   // Step 3
   const [scoreResult, setScoreResult] = useState<ScoreResult | null>(null);
@@ -153,6 +154,7 @@ export default function ApplyPage({ params }: { params: Promise<{ jobId: string 
   // ── Step 2: Score ───────────────────────────────────────────────────────────
   const handleScore = async () => {
     setScoring(true);
+    setScoreError('');
     try {
       const res = await fetch('/api/score', {
         method: 'POST',
@@ -160,11 +162,21 @@ export default function ApplyPage({ params }: { params: Promise<{ jobId: string 
         body: JSON.stringify({ applicationId: jobId, profile, screeningAnswers: answers }),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error);
+      if (!res.ok) {
+        if (data.upgradeRequired) {
+          setScoreError(
+            "This posting has reached its review limit for the month. The recruiter needs to upgrade — please try again later or reach out directly."
+          );
+        } else {
+          throw new Error(data.error);
+        }
+        return;
+      }
       setScoreResult(data.score);
       setStep(3);
     } catch (e) {
       console.error(e);
+      setScoreError('Something went wrong while scoring your application. Please try again.');
     } finally {
       setScoring(false);
     }
@@ -335,6 +347,12 @@ export default function ApplyPage({ params }: { params: Promise<{ jobId: string 
                 />
               </div>
             ))
+          )}
+
+          {scoreError && (
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: 'var(--red)', fontSize: 13, marginBottom: 16, background: 'var(--red-light)', padding: '10px 14px', borderRadius: 8 }}>
+              <AlertCircle size={15} /> {scoreError}
+            </div>
           )}
 
           <div style={{ display: 'flex', gap: 10, marginTop: 8 }}>
