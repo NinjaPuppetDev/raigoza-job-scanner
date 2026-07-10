@@ -50,6 +50,7 @@ describe('POST /api/score', () => {
     expect(res.status).toBe(200);
     expect(json.score.score).toBe(82);
     expect(queries.createCandidate).toHaveBeenCalledWith(
+      expect.anything(),
       expect.objectContaining({ ownerId: 'owner-1' })
     );
   });

@@ -2,6 +2,7 @@ import { createServerClient } from '@supabase/ssr';
 import { NextResponse, type NextRequest } from 'next/server';
 
 const PUBLIC_PATHS = ['/', '/login', '/auth/callback'];
+const PUBLIC_PREFIXES = ['/apply', '/api/applications', '/api/extract', '/api/score'];
 
 export async function proxy(request: NextRequest) {
   let response = NextResponse.next({ request });
@@ -25,7 +26,10 @@ export async function proxy(request: NextRequest) {
 
   const { data: { user } } = await supabase.auth.getUser();
 
-  const isPublic = PUBLIC_PATHS.includes(request.nextUrl.pathname);
+  const { pathname } = request.nextUrl;
+  const isPublic =
+    PUBLIC_PATHS.includes(pathname) ||
+    PUBLIC_PREFIXES.some(prefix => pathname.startsWith(prefix));
 
   if (!user && !isPublic) {
     const url = request.nextUrl.clone();

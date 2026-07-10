@@ -14,12 +14,12 @@ test('candidate can complete the apply flow', async ({ page }) => {
 
   await page.goto('/apply/job-1');
   await page.getByPlaceholder('Paste your resume text here...').fill('Product designer with 10 years experience.');
-  await page.getByText('Extract Information').click();
-  await page.getByText('Continue to Screening').click();
-  await page.getByText('Submit Application').click();
+  await page.getByRole('button', { name: 'Extract Information' }).click();
+  await page.getByRole('button', { name: 'Continue to Screening' }).click();
+  await page.getByRole('button', { name: 'Submit Application' }).click();
 
   await expect(page.getByText('Application submitted!')).toBeVisible();
-  await expect(page.getByText('88')).toBeVisible();
+  await expect(page.getByText('88', { exact: true }).first()).toBeVisible();
 });
 
 test('shows upgrade message when the recruiter hit their limit', async ({ page }) => {
@@ -35,9 +35,9 @@ test('shows upgrade message when the recruiter hit their limit', async ({ page }
 
   await page.goto('/apply/job-1');
   await page.getByPlaceholder('Paste your resume text here...').fill('Resume text.');
-  await page.getByText('Extract Information').click();
-  await page.getByText('Continue to Screening').click();
-  await page.getByText('Submit Application').click();
+  await page.getByRole('button', { name: 'Extract Information' }).click();
+  await page.getByRole('button', { name: 'Continue to Screening' }).click();
+  await page.getByRole('button', { name: 'Submit Application' }).click();
 
   await expect(page.getByText(/reached its review limit/i)).toBeVisible();
 });
