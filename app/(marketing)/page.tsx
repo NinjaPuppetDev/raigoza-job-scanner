@@ -1,6 +1,9 @@
+'use client';
+
 import Link from 'next/link';
 import { ArrowRight, FileText, BarChart2, Lightbulb, Check } from 'lucide-react';
 import styles from './marketing.module.css';
+import { Reveal } from './reveal';
 
 const METRICS = [
   { label: 'Skills Match', pct: 94 },
@@ -78,72 +81,77 @@ export default function LandingPage() {
     <main className={styles.main}>
       {/* Hero */}
       <section className={styles.hero}>
-        <span className={styles.eyebrow}>
-          <span className={styles.eyebrowDot} />
-          AI-powered resume matching
-        </span>
-        <h1 className={styles.heroTitle}>Land More<br />Interviews.</h1>
-        <p className={styles.heroSub}>
-          Track every application, upload your resume, and receive an AI-powered
-          match score before you hit Apply.
-        </p>
-        <div className={styles.heroActions}>
-          <Link href="/login" className={styles.btnPrimaryLg}>
-            Start Free <ArrowRight size={15} />
-          </Link>
-          <Link href="#how-it-works" className={styles.linkGhost}>
-            See how it works <ArrowRight size={13} />
-          </Link>
-        </div>
+        <Reveal>
+          <span className={styles.eyebrow}>
+            <span className={styles.eyebrowDot} />
+            AI-powered resume matching
+          </span>
+          <h1 className={styles.heroTitle}>Land More<br />Interviews.</h1>
+          <p className={styles.heroSub}>
+            Track every application, upload your resume, and receive an AI-powered
+            match score before you hit Apply.
+          </p>
+          <div className={styles.heroActions}>
+            <Link href="/login" className={styles.btnPrimaryLg}>
+              Start Free <ArrowRight size={15} />
+            </Link>
+            <Link href="#how-it-works" className={styles.linkGhost}>
+              See how it works <ArrowRight size={13} />
+            </Link>
+          </div>
+        </Reveal>
 
         {/* Resume match card */}
-        <div className={styles.matchCard}>
-          <div className={styles.matchHeader}>
-            <div>
-              <span className={styles.matchEyebrow}>RESUME MATCH</span>
-              <span className={styles.matchSubtitle}>Senior Product Designer · Figma</span>
-            </div>
-            <span className={styles.badgeExcellent}>Excellent Match</span>
-          </div>
-
-          <div className={styles.matchBody}>
-            <MatchRing pct={89} />
-            <div className={styles.matchSummary}>
-              <strong>Excellent</strong>
-              <p>Your resume is a strong fit for this role.</p>
-            </div>
-          </div>
-
-          <div className={styles.matchMetrics}>
-            {METRICS.map((m) => (
-              <div key={m.label} className={styles.metricRow}>
-                <span className={styles.metricLabel}>{m.label}</span>
-                <div className={styles.metricTrack}>
-                  <div className={styles.metricFill} style={{ width: `${m.pct}%` }} />
-                </div>
-                <span className={styles.metricPct}>{m.pct}%</span>
+        <Reveal delay={150}>
+          <div className={styles.matchCard}>
+            <div className={styles.matchHeader}>
+              <div>
+                <span className={styles.matchEyebrow}>RESUME MATCH</span>
+                <span className={styles.matchSubtitle}>Senior Product Designer · Figma</span>
               </div>
-            ))}
+              <span className={styles.badgeExcellent}>Excellent Match</span>
+            </div>
+
+            <div className={styles.matchBody}>
+              <MatchRing pct={89} />
+              <div className={styles.matchSummary}>
+                <strong>Excellent</strong>
+                <p>Your resume is a strong fit for this role.</p>
+              </div>
+            </div>
+
+            <div className={styles.matchMetrics}>
+              {METRICS.map((m) => (
+                <div key={m.label} className={styles.metricRow}>
+                  <span className={styles.metricLabel}>{m.label}</span>
+                  <div className={styles.metricTrack}>
+                    <div className={styles.metricFill} style={{ width: `${m.pct}%` }} />
+                  </div>
+                  <span className={styles.metricPct}>{m.pct}%</span>
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
+        </Reveal>
       </section>
 
       {/* Feature grid */}
       <section id="how-it-works" className={styles.features}>
-        {FEATURES.map((f) => (
-          <div key={f.title} className={styles.featureCard}>
+        {FEATURES.map((f, i) => (
+          <Reveal key={f.title} delay={i * 100} className={styles.featureCard}>
             <div className={styles.featureIcon}>{f.icon}</div>
             <h3>{f.title}</h3>
             <p>{f.body}</p>
-          </div>
+          </Reveal>
         ))}
       </section>
 
       {/* Pricing */}
       <section id="pricing" className={styles.features} style={{ scrollMarginTop: 96 }}>
-        {PLANS.map((plan) => (
-          <div
+        {PLANS.map((plan, i) => (
+          <Reveal
             key={plan.name}
+            delay={i * 100}
             className={styles.featureCard}
             style={plan.highlight ? { border: '2px solid var(--accent, #111)' } : undefined}
           >
@@ -166,17 +174,19 @@ export default function LandingPage() {
             >
               {plan.cta} <ArrowRight size={plan.highlight ? 15 : 13} />
             </Link>
-          </div>
+          </Reveal>
         ))}
       </section>
 
       {/* CTA */}
       <section className={styles.ctaSection}>
-        <h2>Ready to apply<br />with confidence?</h2>
-        <p>Start free, upgrade whenever you need more reviews.</p>
-        <Link href="/login" className={styles.btnPrimaryLg}>
-          Create Free Account <ArrowRight size={15} />
-        </Link>
+        <Reveal>
+          <h2>Ready to apply<br />with confidence?</h2>
+          <p>Start free, upgrade whenever you need more reviews.</p>
+          <Link href="/login" className={styles.btnPrimaryLg}>
+            Create Free Account <ArrowRight size={15} />
+          </Link>
+        </Reveal>
       </section>
     </main>
   );
