@@ -62,8 +62,23 @@ export async function POST(req: Request) {
     });
 
     return NextResponse.json({ score: scoreResult, candidateId: candidate.id });
-  } catch (err) {
-    console.error('Score error:', err);
+  } catch (err: any) {
+    console.error('Score error:', {
+      message: err?.message,
+      name: err?.name,
+      status: err?.status ?? err?.response?.status,
+      code: err?.code,
+      details: err?.details,
+      hint: err?.hint,
+      stack: err?.stack,
+      raw: (() => {
+        try {
+          return JSON.stringify(err, Object.getOwnPropertyNames(err));
+        } catch {
+          return String(err);
+        }
+      })(),
+    });
     return NextResponse.json({ error: 'Scoring failed' }, { status: 500 });
   }
 }
