@@ -117,8 +117,8 @@ export async function countReviewsThisMonth(supabase: SupabaseClient, ownerId: s
   const { count, error } = await supabase
     .from('candidates')
     .select('id', { count: 'exact', head: true })
-    .eq('ownerId', ownerId)
-    .gte('submittedAt', startOfMonth.toISOString());
+    .eq('user_id', ownerId)
+    .gte('submitted_at', startOfMonth.toISOString());
 
   if (error) throw error;
   return count ?? 0;
@@ -127,8 +127,8 @@ export async function countReviewsThisMonth(supabase: SupabaseClient, ownerId: s
 export async function fetchSubscription(supabase: SupabaseClient, userId: string) {
   const { data } = await supabase
     .from('subscriptions')
-    .select('status, currentPeriodEnd')
-    .eq('userId', userId)
+    .select('status, current_period_end')
+    .eq('user_id', userId)
     .maybeSingle();
   return data;
 }
@@ -143,16 +143,22 @@ export async function upsertSubscription(
     currentPeriodEnd?: string;
   }
 ) {
+  const row = {
+    user_id: params.userId,
+    stripe_customer_id: params.stripeCustomerId,
+    stripe_subscription_id: params.stripeSubscriptionId,
+    status: params.status,
+    current_period_end: params.currentPeriodEnd,
+    updated_at: new Date().toISOString(),
+  };
+
   const match = params.userId
-    ? { userId: params.userId }
-    : { stripeCustomerId: params.stripeCustomerId };
+    ? { user_id: params.userId }
+    : { stripe_customer_id: params.stripeCustomerId };
 
   const { error } = await supabase
     .from('subscriptions')
-    .upsert(
-      { ...params, updatedAt: new Date().toISOString() },
-      { onConflict: params.userId ? 'userId' : 'stripeCustomerId' }
-    );
+    .upsert(row, { onConflict: params.userId ? 'user_id' : 'stripe_customer_id' });
 
   if (error) throw error;
 }
